@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Happy Birthday 💖</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rose: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              300: '#fda4af',
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+            }
+          },
+          fontFamily: {
+            script: ['"Dancing Script"', 'cursive'],
+            handwritten: ['"Caveat"', 'cursive'],
+            body: ['"Quicksand"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Animation & Particle Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/screens.css" />
+</head>
+<body>
+
+  <!-- App Wrapper (Mobile-First Shell) -->
+  <main id="appContainer">
+
+    <!-- Ambient Floating Hearts Background -->
+    <div id="floatingHeartsBg" class="floating-hearts-bg"></div>
+
+    <!-- Top-Right Music Toggle Button -->
+    <button id="musicToggleBtn" class="music-toggle-btn" aria-label="Toggle Background Music" title="Play Music">
+      <span class="music-icon">🎵</span>
+    </button>
+
+    <!-- ========================================================
+         SCREEN 1: PASSCODE LOCK SCREEN
+         ======================================================== -->
+    <section id="screen1" class="screen active" aria-label="Passcode Screen">
+      <div class="flex flex-col items-center text-center w-full max-w-xs z-10">
+        
+        <!-- Glowing 3D Heart Lock Icon -->
+        <div id="lockIcon" class="heart-lock-wrapper">
+          <svg class="heart-lock-svg" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f43f5e" />
+                <stop offset="100%" stop-color="#fb7185" />
+              </linearGradient>
+            </defs>
+            <path d="M50 88 C25 65, 5 45, 15 28 C22 16, 38 14, 50 26 C62 14, 78 16, 85 28 C95 45, 75 65, 50 88Z" fill="url(#heartGradient)" />
+          </svg>
+          <span class="lock-key-icon">🔒</span>
+        </div>
+
+        <span class="cute-badge mb-2">Private Surprise 🎁</span>
+        <h1 class="text-xl font-bold tracking-widest text-rose-500 uppercase">Enter Passcode</h1>
+        <p id="passcodeHint" class="text-xs font-semibold text-rose-400 mt-1 transition-colors duration-300">
+          Something special is waiting for you ✨
+        </p>
+
+        <!-- 4 PIN Display Boxes -->
+        <div id="pinBoxes" class="pin-boxes-container">
+          <div class="pin-box"></div>
+          <div class="pin-box"></div>
+          <div class="pin-box"></div>
+          <div class="pin-box"></div>
+        </div>
+
+        <!-- Numeric Custom Keypad -->
+        <div id="keypadGrid" class="keypad-grid"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 2: BIRTHDAY GREETING & PLAYFUL QUESTION
+         ======================================================== -->
+    <section id="screen2" class="screen" aria-label="Birthday Greeting">
+      <div class="flex flex-col items-center text-center w-full max-w-sm z-10 px-4">
+        
+        <!-- Cute Animated Sticker -->
+        <div id="cuteSticker" class="cute-sticker-container">
+          <div class="cute-sticker-bubble">🧸🎂</div>
+        </div>
+
+        <span class="cute-badge mb-2">A Special Day 💕</span>
+        <h1 id="greetingTitle" class="text-3xl font-bold font-script text-rose-500 mb-2">
+          Happy Birthday, Abhinay 💖
+        </h1>
+        <p id="greetingPrompt" class="text-base font-semibold text-rose-400 max-w-xs mb-8">
+          Are you excited for what's next?
+        </p>
+
+        <!-- Interactive Question Buttons -->
+        <div class="flex items-center justify-center gap-4 w-full relative min-h-[64px]">
+          <button id="btnYes" class="btn-primary" onclick="if(window.App) window.App.goToStage(3)">
+            Yes! 🥳
+          </button>
+          <button id="btnNo" class="btn-secondary btn-dodge">
+            No 😐
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 3: BALLOON POP MINI-GAME
+         ======================================================== -->
+    <section id="screen3" class="screen" aria-label="Balloon Pop Game">
+      <div class="flex flex-col items-center text-center w-full max-w-sm h-full justify-between z-10 py-4">
+        
+        <header>
+          <span class="cute-badge mb-1">Mini Game 🎈</span>
+          <h1 class="text-2xl font-bold font-script text-rose-500">Pop all 4 balloons</h1>
+          <p id="balloonCounter" class="text-xs font-bold text-rose-400 tracking-wider uppercase mt-1">
+            0 / 4 popped
+          </p>
+        </header>
+
+        <!-- Balloon Field -->
+        <div id="balloonPlayArea" class="balloon-play-area"></div>
+
+        <!-- Result & Next Button -->
+        <footer class="flex flex-col items-center gap-3 w-full">
+          <p id="balloonResult" class="text-xl font-bold font-script text-rose-600 hidden opacity-0 transition-opacity">
+            You are so special to me! 💖✨
+          </p>
+          <button id="balloonNextBtn" class="btn-primary hidden opacity-0" onclick="if(window.App) window.App.goToStage(4)">
+            Next Surprise ➜
+          </button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 4: BLOW THE CANDLE
+         ======================================================== -->
+    <section id="screen4" class="screen" aria-label="Blow Candle">
+      <div class="flex flex-col items-center text-center w-full max-w-sm z-10 px-4">
+        
+        <span class="cute-badge mb-1">Make A Wish ✨</span>
+        <h1 id="candleTitle" class="text-2xl font-bold font-script text-rose-500 mb-2">
+          Blow the candle, Abhinay 🎂
+        </h1>
+        <p class="text-xs font-semibold text-rose-400 max-w-xs">
+          Blow into your microphone or tap the candle to blow it out!
+        </p>
+
+        <!-- Aesthetic Birthday Cake Graphic -->
+        <div id="cakeGraphic" class="cake-graphic-wrapper">
+          <div class="candle-flame-container">
+            <div id="candleFlame" class="flame"></div>
+            <div id="smokeContainer" class="relative w-full flex justify-center"></div>
+            <div class="candle-stick"></div>
+          </div>
+          <div class="cake-layers">
+            <div class="cake-top-layer">
+              <div class="cake-frosting-drips"></div>
+              <span class="text-rose-500 text-xs font-bold tracking-widest mt-2">✨ HBD ✨</span>
+            </div>
+            <div class="cake-bottom-plate">
+              HAPPY BIRTHDAY
+            </div>
+          </div>
+        </div>
+
+        <!-- Blow Interaction Controls -->
+        <div id="blowActions" class="flex flex-col gap-3 w-full max-w-xs mt-3">
+          <button id="btnBlowMic" class="btn-primary btn-mic">
+            <span>🎤</span> Blow into the mic
+          </button>
+          <button id="btnBlowTap" class="btn-secondary" onclick="if(window.Stage4Candle) window.Stage4Candle.extinguishFlame()">
+            <span>💨</span> Tap to blow
+          </button>
+        </div>
+
+        <!-- Post-Blow Wish Message -->
+        <div id="candleWishBox" class="hidden mt-4">
+          <p id="candleWishMessage" class="text-xl font-script font-bold text-rose-300 animate-pulse">
+            Close your eyes & make a wish... ✨
+          </p>
+          <button id="candleNextBtn" class="btn-primary mt-3 text-sm py-2 px-6" onclick="if(window.Stage4Candle) window.Stage4Candle.proceedToNext()">
+            Continue ➜
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 5: INTERACTIVE ROSE BOUQUET
+         ======================================================== -->
+    <section id="screen5" class="screen" aria-label="Rose Bouquet">
+      <div class="flex flex-col items-center text-center w-full max-w-sm h-full justify-between z-10 py-4">
+        
+        <header>
+          <span class="cute-badge mb-1">For You 🌹</span>
+          <h1 class="text-2xl font-bold font-script text-rose-500">Your Rose Bouquet</h1>
+          <p id="bouquetCounter" class="text-xs font-semibold text-rose-400 mt-1">
+            Tap the bouquet to reveal sweet thoughts 🌸
+          </p>
+        </header>
+
+        <!-- Center Interactive Bouquet & Quote Bubbles -->
+        <div class="bouquet-stage-area">
+          <div id="bouquetQuotesContainer"></div>
+          <div id="interactiveBouquet" class="interactive-bouquet" role="button" aria-label="Tap bouquet">
+            💐
+          </div>
+        </div>
+
+        <!-- Continue Button -->
+        <footer class="w-full flex justify-center">
+          <button id="bouquetContinueBtn" class="btn-primary" onclick="if(window.App) window.App.goToStage(6)">
+            Continue 💕
+          </button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 6: SWEET MOMENTS (POLAROID PHOTO DECK)
+         ======================================================== -->
+    <section id="screen6" class="screen" aria-label="Sweet Moments">
+      <div class="flex flex-col items-center text-center w-full max-w-sm h-full justify-between z-10 py-4">
+        
+        <header>
+          <span class="cute-badge mb-1">Memories 📸</span>
+          <h1 class="text-2xl font-bold font-script text-rose-500">Some Sweet Moments</h1>
+          <p id="polaroidCounter" class="text-xs font-semibold text-rose-400 mt-1">
+            Swipe or tap the cards
+          </p>
+        </header>
+
+        <!-- Polaroid Deck Stack -->
+        <div id="polaroidDeck" class="polaroid-deck-container"></div>
+
+        <!-- Controls -->
+        <footer class="flex items-center gap-3">
+          <button id="polaroidResetDeck" class="btn-secondary hidden text-xs py-2 px-4" onclick="if(window.Stage6Polaroids) window.Stage6Polaroids.renderDeck()">
+            ↺ View Again
+          </button>
+          <button id="polaroidNextBtn" class="btn-primary" onclick="if(window.App) window.App.goToStage(7)">
+            Read My Letter 💌
+          </button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 7: LETTER FROM MY HEART (ANIMATED ENVELOPE)
+         ======================================================== -->
+    <section id="screen7" class="screen" aria-label="Heart Letter">
+      <div class="flex flex-col items-center text-center w-full max-w-sm h-full justify-between z-10 py-4">
+        
+        <header>
+          <span class="cute-badge mb-1">From My Heart 💌</span>
+          <h1 class="text-2xl font-bold font-script text-rose-500">A Message For You</h1>
+          <p id="envelopePrompt" class="text-xs font-semibold text-rose-400 mt-1">
+            Tap the wax seal to open ✨
+          </p>
+        </header>
+
+        <!-- Cute 3D Flap Envelope -->
+        <div id="letterEnvelope" class="envelope-interactive">
+          <div class="envelope-flap"></div>
+          <div id="envelopeSeal" class="envelope-seal">💖</div>
+        </div>
+
+        <!-- Unfolding Handwritten Letter Paper -->
+        <div id="letterPaper" class="letter-paper-wrapper hidden">
+          <div id="letterTypingArea" class="letter-text"></div>
+        </div>
+
+        <!-- Next Button -->
+        <footer class="w-full flex justify-center">
+          <button id="letterNextBtn" class="btn-primary hidden" onclick="if(window.App) window.App.goToStage(8)">
+            One last surprise ✨
+          </button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SCREEN 8: THE FINAL GIFT BOX CELEBRATION
+         ======================================================== -->
+    <section id="screen8" class="screen" aria-label="Final Celebration">
+      <div class="flex flex-col items-center text-center w-full max-w-sm z-10 px-4">
+        
+        <span class="cute-badge mb-2">Grand Finale 🎁</span>
+        <h1 id="giftTitle" class="text-2xl font-bold font-script text-rose-500 mb-2">
+          One Last Thing... Tap the gift 🎁
+        </h1>
+
+        <!-- Bouncing 3D Gift Box -->
+        <div id="interactiveGiftBox" class="gift-box-interactive" onclick="if(window.Stage8Gift) window.Stage8Gift.openGift()">
+          <div id="giftLid" class="gift-box-lid">
+            <span class="gift-bow">🎀</span>
+          </div>
+          <div class="gift-box-body">
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+          </div>
+        </div>
+
+        <!-- Celebration Card (Revealed on Open) -->
+        <div id="finalCelebrationCard" class="final-card-celebration hidden">
+          <div id="giftFinalEmojis" class="text-4xl mb-3 tracking-widest">
+            🧸🎂🌸🎁🥳🎈✨
+          </div>
+          <h2 class="text-2xl font-bold font-script text-rose-600 mb-2">
+            Happy Birthday, Beautiful Soul!
+          </h2>
+          <p id="giftFinalMessage" class="text-sm font-semibold text-rose-500 leading-relaxed mb-5">
+            May this year shower you with endless laughter, good health, unforgettable adventures, and every dream you have ever wished for! 💖✨
+          </p>
+          <button id="btnReplayApp" class="btn-primary w-full" onclick="if(window.App) window.App.replay()">
+            🔄 Replay from Start
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       MODULAR JAVASCRIPT ARCHITECTURE
+       ======================================================== -->
+  <!-- 1. Central Configuration (Customizable names, passcode, texts) -->
+  <script src="js/config.js"></script>
+
+  <!-- 2. Audio Engine & Sound Synthesis (Web Audio API) -->
+  <script src="js/audio.js"></script>
+
+  <!-- 3. Ambient Particles, Sparkles & Confetti Engine -->
+  <script src="js/particles.js"></script>
+
+  <!-- 4. Separate Stage Modules -->
+  <script src="js/stages/stage1-passcode.js"></script>
+  <script src="js/stages/stage2-greeting.js"></script>
+  <script src="js/stages/stage3-balloons.js"></script>
+  <script src="js/stages/stage4-candle.js"></script>
+  <script src="js/stages/stage5-bouquet.js"></script>
+  <script src="js/stages/stage6-polaroids.js"></script>
+  <script src="js/stages/stage7-letter.js"></script>
+  <script src="js/stages/stage8-gift.js"></script>
+
+  <!-- 5. Main App Controller -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

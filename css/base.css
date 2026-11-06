@@ -1,0 +1,98 @@
+/* ============================================================
+   🌸 BASE STYLES, LAYOUT & TYPOGRAPHY
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --color-primary: #f43f5e;
+  --color-primary-light: #fb7185;
+  --color-pastel-pink: #ffe4e6;
+  --color-blush: #fff1f2;
+  --color-cream: #fffaf0;
+  --color-gold: #fbbf24;
+  --color-text-main: #4a1525;
+  --color-text-muted: #883e54;
+  --shadow-soft: 0 10px 30px -5px rgba(244, 63, 94, 0.2);
+  --shadow-glow: 0 0 25px rgba(244, 63, 94, 0.35);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--color-text-main);
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe4e6 45%, #ffd1dc 100%);
+  user-select: none;
+}
+
+/* App Viewport Container (Mobile-first centered shell) */
+#appContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 50px rgba(244, 63, 94, 0.12);
+}
+
+@media (min-width: 640px) {
+  #appContainer {
+    height: 92vh;
+    margin: 4vh auto;
+    border-radius: 36px;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 25px 60px -10px rgba(244, 63, 94, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Screen Management */
+.screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 63, 94, 0.25);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 63, 94, 0.45);
+}
+
